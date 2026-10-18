@@ -1,0 +1,133 @@
+generator client {
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum CodingQuestionType {
+  DSA
+  INTERVIEW
+}
+
+enum JobApplicationStatus {
+  SAVED
+  APPLIED
+  ASSESSMENT
+  INTERVIEW
+  OFFER
+  REJECTED
+  WITHDRAWN
+}
+
+enum JobType {
+  FULL_TIME
+  INTERNSHIP
+  CONTRACT
+  OTHER
+}
+
+enum WorkArrangement {
+  ONSITE
+  HYBRID
+  REMOTE
+}
+
+enum JournalMood {
+  VERY_GOOD
+  GOOD
+  NEUTRAL
+  LOW
+  VERY_LOW
+}
+
+model CodingQuestion {
+  id              String             @id @default(cuid()) @db.VarChar(30)
+  date            DateTime           @db.Date
+  type            CodingQuestionType
+  questionContent String             @db.Text
+  expectedOutput  String             @db.Text
+  createdAt       DateTime           @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime           @updatedAt @db.Timestamptz(3)
+
+  @@index([date])
+  @@index([type, date])
+}
+
+model JobApplication {
+  id              String               @id @default(cuid()) @db.VarChar(30)
+  companyName     String               @db.VarChar(160)
+  jobTitle        String               @db.VarChar(180)
+  jobUrl          String?              @db.VarChar(2048)
+  jobDescription  String?              @db.Text
+  applicationDate DateTime?            @db.Date
+  jobType         JobType?
+  workArrangement WorkArrangement?
+  matchAssessment String?              @db.Text
+  resumeVersion   String?              @db.VarChar(160)
+  status          JobApplicationStatus @default(SAVED)
+  followUpDate    DateTime?            @db.Date
+  notes           String?              @db.Text
+  createdAt       DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime             @updatedAt @db.Timestamptz(3)
+
+  @@index([status, applicationDate])
+  @@index([applicationDate])
+  @@index([followUpDate])
+  @@index([companyName, jobTitle])
+}
+
+model PythonLearningEntry {
+  id                  String   @id @default(cuid()) @db.VarChar(30)
+  practiceDate        DateTime @db.Date
+  topic               String   @db.VarChar(180)
+  notes               String?  @db.Text
+  exerciseDescription String?  @db.Text
+  completed           Boolean  @default(false)
+  createdAt           DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt           DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([practiceDate])
+  @@index([completed, practiceDate])
+}
+
+model CommunicationPractice {
+  id              String   @id @default(cuid()) @db.VarChar(30)
+  practiceDate    DateTime @db.Date
+  topic           String   @db.VarChar(180)
+  durationMinutes Int
+  notes           String?  @db.Text
+  completed       Boolean  @default(false)
+  createdAt       DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([practiceDate])
+  @@index([completed, practiceDate])
+}
+
+model DailyTargetSettings {
+  id                    String   @id @default("daily") @db.VarChar(30)
+  jobApplications       Int      @default(2)
+  dsaQuestions          Int      @default(2)
+  interviewQuestions    Int      @default(1)
+  pythonLessons         Int      @default(1)
+  communicationSessions Int      @default(1)
+  createdAt             DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime @updatedAt @db.Timestamptz(3)
+}
+
+model JournalEntry {
+  id        String      @id @default(cuid()) @db.VarChar(30)
+  entryDate DateTime    @db.Date
+  title     String      @db.VarChar(160)
+  content   String      @db.Text
+  mood      JournalMood?
+  tags      String[]    @default([])
+  createdAt DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime    @updatedAt @db.Timestamptz(3)
+
+  @@index([entryDate, createdAt])
+}

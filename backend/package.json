@@ -1,0 +1,27 @@
+{
+  "name": "job-tracker-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.js",
+    "start": "tsx src/server.js",
+    "db:validate": "prisma validate",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.10.0",
+    "@prisma/client": "7.10.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "tsx": "^4.20.3"
+  },
+  "devDependencies": {
+    "prisma": "7.10.0"
+  }
+}
+
